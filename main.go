@@ -51,9 +51,7 @@ func main() {
 		results = append(results, result)
 	}
 
-	fmt.Println(results[0].part1Time.Milliseconds(), results[0].part1Time.Microseconds(), results[0].part1Time.Nanoseconds())
-
-	fmt.Println(printAsTable(results))
+	fmt.Println(asTable(results))
 }
 
 type DayStats struct {
@@ -125,7 +123,7 @@ func solveDay(inputDir string, day int) (DayStats, error) {
 	return stats, nil
 }
 
-func printAsTable(results []DayStats) string {
+func asTable(results []DayStats) string {
 	// Day | Parse Time | Part 1 Time | Part 2 Time | Part 1 Result | Part 2 Result
 	colWidths := make([]int, 6)
 	days := make([]string, len(results)+1)
