@@ -24,21 +24,21 @@ func main() {
 	switch {
 	case *dayFlag == 0:
 		// Run all days
-		results_chan := make(chan DayStats, 25)
+		resultsChan := make(chan DayStats, 25)
 		for i := 1; i <= len(solver.Solvers()); i++ {
 			go func(i int) {
 				result, err := solveDay(*inputDir, i)
 				if err != nil {
 					fmt.Printf("Error running day %d: %v", i, err)
 				}
-				results_chan <- result
+				resultsChan <- result
 			}(i)
 		}
 		for i := 1; i <= len(solver.Solvers()); i++ {
-			results = append(results, <-results_chan)
+			results = append(results, <-resultsChan)
 		}
 		// Close the channel
-		close(results_chan)
+		close(resultsChan)
 		sort.Sort(byDay(results))
 	case *dayFlag < 0 || *dayFlag > len(solver.Solvers()):
 		// Invalid day
@@ -77,7 +77,12 @@ func getInput(dir string, day int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Printf("Error closing file: %v", err)
+		}
+	}(file)
 
 	contents, err := io.ReadAll(file)
 	if err != nil {
